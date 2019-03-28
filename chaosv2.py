@@ -40,7 +40,7 @@ def main(size):
             change = 0
             loc = (clickX, clickY)
             points.append(loc)
-            cv2.circle(back, loc, 2, 255, -1)
+            cv2.circle(back, loc, 1, 255, -1)
             cv2.putText(back, letters[len(points)-1], loc, cv2.FONT_HERSHEY_SIMPLEX,
                         1, 255, 2, cv2.LINE_AA)
             print(letters[len(points)-1] + str(loc))
@@ -49,12 +49,16 @@ def main(size):
     #Generate
     print("Generating")
     iter = 0
+    prevnum = 0
+    n = len(points)
     while True:
         #Generate random number
-        num = np.random.randint(len(points))
+        num = np.random.randint(n)
+        #For n > 3: skip for same vertex
+        if (n > 3) and (num == prevnum): continue
         #Draw the selected point
         loc = (int((points[num][0]+loc[0])/2), int((points[num][1]+loc[1])/2))
-        cv2.circle(back, loc, 2, 255, -1)
+        cv2.circle(back, loc, 1, 255, -1)
         show = back.copy()
         cv2.putText(show, 'Iter : '+str(iter), (0,20), cv2.FONT_HERSHEY_SIMPLEX,
                     0.7, 255, 1, cv2.LINE_AA)
@@ -62,6 +66,7 @@ def main(size):
                     0.5, 255, 1, cv2.LINE_AA)
         cv2.imshow('Draw', show)
         iter += 1
+        prevnum = num
         if cv2.waitKey(1) == ord('q'): break
     cv2.waitKey(0)
     cv2.destroyAllWindows()
